@@ -44,7 +44,7 @@ export function CallContract({
         <input name="targetAddress" placeholder="Address" required />
         <input
           name="amount"
-          placeholder="Amount (ETH)"
+          placeholder="Amount"
           type="number"
           step="1"
           required
