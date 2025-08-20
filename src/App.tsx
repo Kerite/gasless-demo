@@ -1,6 +1,9 @@
 import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
+import { useState } from "react";
+import { isAddress } from "viem";
 import { useAccount } from "wagmi";
 import "./App.css";
+import { CallContract } from "./components/CallContract.tsx";
 import { Balance } from "./components/getBalance.tsx";
 import { SendTransaction } from "./components/sendTransaction.tsx";
 import { SwitchChain } from "./components/switchNetwork.tsx";
@@ -10,6 +13,7 @@ function App() {
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
   const { address } = useAccount();
+  const [customErc20Address, setCustomErc20Address] = useState("");
 
   // function uiConsole(...args: any[]): void {
   //   const el = document.querySelector("#console>p");
@@ -37,9 +41,17 @@ function App() {
           {disconnectError && <div className="error">{disconnectError.message}</div>}
         </div>
       </div>
-      <SendTransaction />
-      <Balance />
       <SwitchChain />
+      <Balance />
+      <SendTransaction />
+      <div>
+        <h2>Erc20 Balance</h2>
+        <input
+          placeholder={import.meta.env.VITE_DEFAULT_ERC20_ADDRESS}
+          value={customErc20Address}
+          onChange={(e) => setCustomErc20Address(e.target.value)} />
+      </div>
+      {address && (customErc20Address !== "" && isAddress(customErc20Address) || customErc20Address === "" && import.meta.env.VITE_DEFAULT_ERC20_ADDRESS) && <CallContract accountAddress={address} erc20Address={isAddress(customErc20Address) ? customErc20Address : import.meta.env.VITE_DEFAULT_ERC20_ADDRESS} />}
     </div>
   );
 
@@ -67,16 +79,6 @@ function App() {
       <div id="console" style={{ whiteSpace: "pre-line" }}>
         <p style={{ whiteSpace: "pre-line" }}></p>
       </div>
-
-      <footer className="footer">
-        <a
-          href="https://github.com/Web3Auth/web3auth-examples/tree/main/quick-starts/react-quick-start"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Source code
-        </a>
-      </footer>
     </div>
   );
 }

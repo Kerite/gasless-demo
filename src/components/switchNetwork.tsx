@@ -7,7 +7,7 @@ export function SwitchChain() {
   return (
     <div>
       <h2>Switch Chain</h2>
-      <h3>Connected to {chainId}</h3>
+      <h3>Connected Chain ID: {chainId}</h3>
       {chains.map((chain) => (
         <button
           disabled={chainId === chain.id}
